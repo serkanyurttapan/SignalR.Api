@@ -1,0 +1,47 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            debugger
+            var connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:44337/ConnectionHub").build();
+            $("#conStatus").text(connection.connectionState);
+            connection.start().then(() => {
+                $("#conStatus").text(connection.connectionState);
+            }).catch((err) => {
+                console.log(err)
+            });
+
+            connection.on("ReceiveName", (name) => {
+                debugger
+                console.log(name);alert(name)
+            })
+
+            $("button").click(function () {
+                debugger
+                connection.invoke("SendName", $("#txt").val()).catch((err) => console.log(err))
+                alert(name);
+
+                debugger
+            });
+        })
+    </script>
+
+}
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <input class="form-control" type="text" id="txt" />
+        <hr />
+        <button class="btn btn-primary">İsim Kaydet</button>
+        <div class="alert alert-info">
+            Bağlantı Durumu :<strong id="conStatus"></strong>
+
+
+        </div>
+    </div>
+</div>
